@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Day from './Day';
 
-const Month = ({ days, name }) => {
+const Month = ({ days, name, setTooltipContent, clearTooltipContent }) => {
   // Calculate the fixed height for the days container.
   // For example, if you expect at most 6 rows of days, and each day is 4 units high with a margin of 0.5 units:
   const dayHeight = 'h-4'; // Height of each day
@@ -14,7 +14,8 @@ const Month = ({ days, name }) => {
       {/* Fixed height container for days to maintain consistent gap between days */}
       <div className={`flex flex-wrap justify-center mb-2 ${daysContainerHeight} overflow-hidden`}>
         {days.map((day, index) => (
-          <Day key={index} active={day.active} />
+          <Day key={index} active={day.active} date={day.date} setTooltipContent={setTooltipContent}
+            clearTooltipContent={clearTooltipContent} />
         ))}
       </div>
       {/* Month name at the bottom */}

@@ -8,3 +8,18 @@ body {
     background-color: #27272a;
 }
 
+/* Style for when the toggle is checked */
+input[type="checkbox"]:checked ~ .dot {
+    transform: translateX(1.5rem); /* Adjust this value based on the size of your toggle */
+}
+
+/* Add this in your global CSS file */
+.custom-tooltip {
+    background-color: #333 !important; /* Dark background */
+    color: #fff !important; /* Light text */
+    border-radius: 4px !important; /* Rounded corners */
+    padding: 6px 10px !important; /* Top & bottom, Left & right padding */
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2) !important; /* Shadow effect */
+    font-size: 12px !important; /* Smaller font size */
+  }
+  
