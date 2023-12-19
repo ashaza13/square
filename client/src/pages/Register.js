@@ -16,6 +16,55 @@ const Register = ({ setSignedIn }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Reset the errors
+        setEmailError("");
+        setPasswordError("");
+        setUsernameError("");
+
+        // Validate the email and password
+        if (!email) {
+            setEmailError("Email is required");
+            return;
+        }
+        if (!password) {
+            setPasswordError("Password is required");
+            return;
+        }
+        if (!username) {
+            setUsernameError("Username is required");
+            return;
+        }
+
+        // If there are no errors, try to register the user
+        if (!emailError && !passwordError && !usernameError) {
+            // Send a POST request to the server
+            fetch("http://localhost:3001/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password }),
+            })
+                .then((res) => {
+                    // If the credentials are invalid, show an error
+                    if (res.status === 400) {
+                        setEmailError("Email already exists");
+                        return;
+                    }
+
+                    // If the credentials are valid, log the user in
+                    if (res.status === 201) {
+                        setSignedIn(true);
+                        navigate("/");
+                        return;
+                    }
+
+                    // Throw an error if the status code is none of the above
+                    throw new Error("Unable to register");
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
     };
 
 
@@ -67,7 +116,7 @@ const Register = ({ setSignedIn }) => {
                         {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}
                     </div>
                     <div className="flex items-center">
-                        <input type="submit" value="Register" className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 transition duration-500 rounded shadow-sm hover:bg-green-800 focus:outline-none focus:ring" />
+                        <input type="submit" value="Register" className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 transition duration-500 rounded shadow-sm hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-300" />
                     </div>
                 </form>
 
