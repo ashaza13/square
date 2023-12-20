@@ -73,6 +73,7 @@ const Login = ({ setLoggedIn }) => {
 
   return (
     <div className={`${styles.paddingY} min-h-screen flex flex-col justify-center items-center`}>
+      <h1 className="text-6xl font-bold text-white pb-8 animate-bounce">Welcome to Squares</h1>
       <div className="max-w-xs bg-zinc-700 rounded shadow-md p-12">
         <h2 className="text-xl font-bold text-center text-white">Login</h2>
         <form onSubmit={handleSubmit}>

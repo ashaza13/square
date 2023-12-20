@@ -15,7 +15,7 @@ function App() {
         <Route exact path='/login' element={<Login setLoggedIn={setLoggedIn} />} />
         <Route exact path='/register' element={<Register />} />
       </Routes>
-      <ToastContainer 
+      <ToastContainer
         position='top-right'
         autoClose={5000}
         hideProgressBar={false}

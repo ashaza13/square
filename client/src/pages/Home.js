@@ -21,9 +21,10 @@ const Home = ({ loggedIn }) => {
 
     return (
         <div className={`flex flex-col w-screen h-screen items-center justify-center space-y-4`}>
-            <button onClick={handleLogout} className={`px-4 py-2 rounded-md bg-red-500 text-white`}>Logout</button>
+            <h1 className={`text-4xl text-white`}>Little things add up!</h1>
             <Tasks />
             <Squares />
+            <button onClick={handleLogout} className={`px-4 py-2 rounded-md bg-red-500 text-white`}>Logout</button>
         </div>
     );
 

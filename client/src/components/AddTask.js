@@ -1,7 +1,13 @@
 import React from "react";
+import { toast } from 'react-toastify';
+import Cookie from 'js-cookie';
 
 const AddTask = () => {
+    const [taskName, setTaskName] = React.useState("");
     const [open, setOpen] = React.useState(false);
+    const [repeats, setRepeats] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
 
     const handleClick = () => {
         setOpen(true);
@@ -9,7 +15,55 @@ const AddTask = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setOpen(false);
+
+        // Reset the errors
+        setError("");
+
+        // Validate the task
+        if (!taskName) {
+            setError("Task is required");
+            return;
+        }
+
+        setLoading(true);
+
+        const date = new Date().toISOString().slice(0, 10);
+        const uid = JSON.parse(Cookie.get('auth'))._id;
+
+        // Send a POST request to the server
+        fetch("/tasks", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ uid, taskName, repeats, date }),
+        })
+            .then((res) => {
+                setLoading(false);
+
+                // If the credentials are invalid, show an error
+                if (res.status === 400) {
+                    setError("Invalid task");
+                    console.log(res)
+                    return Promise.reject(new Error("Invalid task"));
+                }
+
+                // If successful, process the response
+                if (res.ok) {
+                    toast.success("Task added successfully");
+                    return res.json(); // Parse the JSON response
+                }
+
+                // Handle other non-success cases
+                throw new Error("Unable to add task");
+            })
+            .then((data) => {
+                setOpen(false);
+                setTaskName("");
+                setRepeats(false);
+            })
+            .catch((err) => {
+                console.error(err);
+                setError(err.message || "Unable to add task");
+            });
     }
 
     return (
@@ -34,7 +88,10 @@ const AddTask = () => {
                                         id="task"
                                         name="task"
                                         className="form-control w-full px-3 py-2 text-sm text-white bg-zinc-800 rounded border-0 shadow-sm focus:outline-none focus:ring focus:ring-green-300"
+                                        value={taskName}
+                                        onChange={(e) => setTaskName(e.target.value)}
                                     />
+                                    {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
                                 </div>
                                 <div className="mb-4">
                                     <label htmlFor="toggleOption" className="flex items-center cursor-pointer">
@@ -47,7 +104,7 @@ const AddTask = () => {
                                             <div className="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-6"></div> {/* Added peer-checked for translate */}
                                         </div>
                                         <div className="ml-3 text-sm font-medium text-white">
-                                            Toggle Option
+                                            More than once a day?
                                         </div>
                                     </label>
                                 </div>
