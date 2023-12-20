@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import styles from "../style";
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Cookie from 'js-cookie';
+import { Spinner } from '../components';
 
 // Login component
 const Login = ({ setLoggedIn }) => {
@@ -24,47 +26,49 @@ const Login = ({ setLoggedIn }) => {
     // Validate the email and password
     if (!email) {
       setEmailError("Email is required");
+      return; // Stop execution if there's an error
     }
     if (!password) {
       setPasswordError("Password is required");
+      return; // Stop execution if there's an error
     }
 
-    // If there are no errors, try to login the user
-    if (!emailError && !passwordError) {
-      setLoading(true);
+    setLoading(true);
 
-      // Send a POST request to the server
-      fetch("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
-        .then((res) => {
-          setLoading(false);
+    // Send a POST request to the server
+    fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((res) => {
+        setLoading(false);
 
-          // If the credentials are invalid, show an error
-          if (res.status === 401) {
-            setEmailError("Invalid credentials");
-            return;
-          }
+        // If the credentials are invalid, show an error
+        if (res.status === 401) {
+          setEmailError("Invalid credentials");
+          return Promise.reject(new Error("Invalid credentials"));
+        }
 
+        // If successful, process the response
+        if (res.ok) {
           toast.success("Logged in successfully");
-          // If the credentials are valid, log the user in
-          if (res.status === 200) {
-            setLoggedIn(true);
-            
-            navigate("/");
-            return;
-          }
+          return res.json(); // Parse the JSON response
+        }
 
-          // Throw an error if the status code is none of the above
-          throw new Error("Unable to login");
-        })
-        .catch((err) => {
-          console.error(err);
-          setEmailError("Unable to login");
-        });
-    }
+        // Handle other non-success cases
+        throw new Error("Unable to login");
+      })
+      .then((data) => {
+        setLoggedIn(true);
+        const expirationTime = new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 3);
+        Cookie.set('auth', JSON.stringify(data), { expires: expirationTime });
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error(err);
+        setEmailError(err.message || "Unable to login");
+      });
   };
 
   return (
@@ -101,7 +105,13 @@ const Login = ({ setLoggedIn }) => {
             {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}
           </div>
           <div className="flex items-center">
-            <input type="submit" value="Login" className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded shadow-sm transition duration-500 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-300" />
+            <button
+              type="submit"
+              className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded shadow-sm transition duration-500 hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-300"
+              disabled={loading}
+            >
+              {loading ? <Spinner /> : "Login"}
+            </button>
           </div>
         </form>
 

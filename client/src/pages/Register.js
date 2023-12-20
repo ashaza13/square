@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styles from "../style";
-import { Link } from 'react-router-dom';
+import Cookie from 'js-cookie';
+import { Spinner } from '../components';
+import { toast } from 'react-toastify';
 
 // Register component
 const Register = ({ setSignedIn }) => {
@@ -22,7 +24,7 @@ const Register = ({ setSignedIn }) => {
         setPasswordError("");
         setUsernameError("");
 
-        // Validate the email and password
+        // Validate the email, password, and username
         if (!email) {
             setEmailError("Email is required");
             return;
@@ -38,28 +40,31 @@ const Register = ({ setSignedIn }) => {
 
         // If there are no errors, try to register the user
         if (!emailError && !passwordError && !usernameError) {
-            // Send a POST request to the server
             fetch("http://localhost:3001/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password }),
             })
                 .then((res) => {
-                    // If the credentials are invalid, show an error
-                    if (res.status === 400) {
-                        setEmailError("Email already exists");
+                    if (!res.ok) {
+                        if (res.status === 400) {
+                            setEmailError("Email already exists");
+                        } else {
+                            throw new Error("Unable to register");
+                        }
                         return;
                     }
-
-                    // If the credentials are valid, log the user in
-                    if (res.status === 201) {
-                        setSignedIn(true);
+                    return res.json();
+                })
+                .then((data) => {
+                    if (data) {
+                        // setSignedIn(true);
+                        // Store the necessary data in a cookie
+                        const expirationTime = new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 3); // Adjust the expiration time as needed
+                        Cookie.set('auth', JSON.stringify(data), { expires: expirationTime });
+                        toast.success("Registered successfully");
                         navigate("/");
-                        return;
                     }
-
-                    // Throw an error if the status code is none of the above
-                    throw new Error("Unable to register");
                 })
                 .catch((err) => {
                     console.error(err);
