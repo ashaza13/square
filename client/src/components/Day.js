@@ -7,7 +7,7 @@ const Day = ({ active, date, setTooltipContent, clearTooltipContent }) => {
   });
   const submissionText = `0 submissions on ${dateString}`;
   const baseStyle = 'w-2 h-2 m-0.5 rounded-sm';
-  const activeStyle = active ? 'bg-green-500' : 'bg-gray-500';
+  const activeStyle = active > 0 ? 'bg-green-500' : 'bg-gray-500';
 
   return (
     <div

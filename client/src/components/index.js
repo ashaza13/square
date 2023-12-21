@@ -7,5 +7,6 @@ import Month from "./Month";
 import YearGrid from "./YearGrid";
 import TaskUpdates from "./TaskUpdates";
 import Spinner from "./Spinner";
+import TaskCardSkeleton from "./TaskCardSkeleton";
 
-export { Squares, TaskCard, Tasks, AddTask, Day, Month, YearGrid, TaskUpdates, Spinner };
+export { Squares, TaskCard, Tasks, AddTask, Day, Month, YearGrid, TaskUpdates, Spinner, TaskCardSkeleton };

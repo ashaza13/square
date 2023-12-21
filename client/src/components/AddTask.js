@@ -2,7 +2,7 @@ import React from "react";
 import { toast } from 'react-toastify';
 import Cookie from 'js-cookie';
 
-const AddTask = () => {
+const AddTask = (event) => {
     const [taskName, setTaskName] = React.useState("");
     const [open, setOpen] = React.useState(false);
     const [repeats, setRepeats] = React.useState(false);
@@ -59,6 +59,9 @@ const AddTask = () => {
                 setOpen(false);
                 setTaskName("");
                 setRepeats(false);
+                
+                // Add the new task to the list
+                event.addTask(data);
             })
             .catch((err) => {
                 console.error(err);
