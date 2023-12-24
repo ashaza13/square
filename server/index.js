@@ -12,6 +12,19 @@ const PORT = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use(express.urlencoded({ extended: false }));
+
+//STATIC
+// get directory where is index.html
+const root = path.join(__dirname, 'client', 'build');
+//express.use static with the directory
+app.use(express.static(root));
+//express get request any (*) root, please use file that is on root directory configure above.
+app.get("*", (req, res) => {
+    res.sendFile('index.html', { root });
+});
+
+
 
 const uri = process.env.MONGODB_URI || "mongodb+srv://ahmedashaz9:MpyClnFaC7MuMcb3@cluster0.xwx3k4e.mongodb.net/?retryWrites=true&w=majority";
 
@@ -43,11 +56,6 @@ async function connectToMongoDB() {
 
 // Call the function to connect to MongoDB
 connectToMongoDB();
-
-
-app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
 
 // Register Route
 app.post('/register', async (req, res) => {
