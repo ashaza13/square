@@ -6,7 +6,10 @@
 
 body {
     background-color: #27272a;
+    position: relative;
+    min-height: 100vh;
 }
+
 
 /* Style for when the toggle is checked */
 input[type="checkbox"]:checked ~ .dot {

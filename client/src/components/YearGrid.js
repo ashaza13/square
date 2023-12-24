@@ -23,7 +23,7 @@ const YearGrid = ({ yearData }) => {
 
     return (
         <div className="rounded-md flex flex-col bg-zinc-700 shadow-md px-2 py-2 md:px-4 md:py-4 justify-center">
-            <div className="sm:flex sm:overflow-x-auto md:grid md:gap-1 md:grid-cols-6">
+            <div className="grid grid-cols-3 gap-4 md:grid md:grid-cols-6 md:gap-1">
                 {yearData.map((month, index) => (
                     <Month
                         key={index}
