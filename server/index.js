@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3001;
 app.use(bodyParser.json());
 app.use(cors());
 
-const uri = "mongodb+srv://ahmedashaz9:MpyClnFaC7MuMcb3@cluster0.xwx3k4e.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URI || "mongodb+srv://ahmedashaz9:MpyClnFaC7MuMcb3@cluster0.xwx3k4e.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 
@@ -43,6 +43,11 @@ async function connectToMongoDB() {
 
 // Call the function to connect to MongoDB
 connectToMongoDB();
+
+
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 
 // Register Route
 app.post('/register', async (req, res) => {
