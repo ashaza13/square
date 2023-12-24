@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Cookies from 'js-cookie';
-import { Tasks, Squares } from "../components";
+import { Tasks, Squares, Spinner } from "../components";
 import { useNavigate } from "react-router-dom";
 
 const initializeYearData = (year) => {
@@ -33,27 +33,28 @@ const initializeYearData = (year) => {
     return yearData;
 };
 
-const yearData = initializeYearData(2023);
-
-
 const Home = ({ loggedIn }) => {
     const isAuthenticated = !!Cookies.get('auth');
     const [selected, setSelected] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [tasks, setTasks] = React.useState([]);
+    const [yearData, setYearData] = React.useState(initializeYearData(new Date().getFullYear()));
 
     const navigate = useNavigate();
 
     const handleSelected = (task) => {
+        // Initialize the year data
+        const newYearData = initializeYearData(new Date().getFullYear());
 
         for (let i = 0; i < task.dates.length; i++) {
             const date = new Date(task.dates[i].date);
             const monthIndex = date.getMonth();
             const dayIndex = date.getDate() - 1;
 
-            yearData[monthIndex].days[dayIndex].active = task.dates[i].count;
+            newYearData[monthIndex].days[dayIndex].active = task.dates[i].count;
         }
 
+        setYearData(newYearData);
         setSelected(task);
     }
 
@@ -67,13 +68,15 @@ const Home = ({ loggedIn }) => {
                 .then((res) => res.json())
                 .then((data) => {
                     setTasks(data);
-                    setLoading(false);
-
-                    if (data.length != 0) {
-                        handleSelected(data[0]);
-                    }
                 })
                 .catch((err) => console.log(err));
+
+            console.log(tasks);
+            if (tasks.length > 0) {
+                handleSelected(tasks[0]);
+            }
+
+            setLoading(false);
         }
     }, []);
 
@@ -87,9 +90,13 @@ const Home = ({ loggedIn }) => {
         return null;
     }
 
+    if (loading) {
+        return <Spinner />;
+    }
+
     return (
         <div className={`flex flex-col w-screen h-screen items-center justify-center space-y-4`}>
-            <h1 className={`text-4xl text-white`}>Little things add up!</h1>
+            <h1 className={`text-4xl text-white`}>Fill Your Squares</h1>
             <Tasks tasks={tasks} setTasks={setTasks} loading={loading} selected={selected} setSelected={handleSelected} />
             <Squares task={selected} yearData={yearData} />
             <button onClick={handleLogout} className={`px-4 py-2 rounded-md bg-red-500 text-white`}>Logout</button>

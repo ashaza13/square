@@ -96,21 +96,6 @@ const AddTask = (event) => {
                                     />
                                     {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
                                 </div>
-                                <div className="mb-4">
-                                    <label htmlFor="toggleOption" className="flex items-center cursor-pointer">
-                                        <div className="relative">
-                                            {/* This is the toggle switch */}
-                                            <input type="checkbox" id="toggleOption" className="sr-only peer" /> {/* Added peer class */}
-                                            {/* Toggle background */}
-                                            <div className="block bg-gray-600 w-12 h-6 rounded-full peer-checked:bg-green-600 transition-colors"></div> {/* Added peer-checked for bg */}
-                                            {/* Toggle circle */}
-                                            <div className="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-6"></div> {/* Added peer-checked for translate */}
-                                        </div>
-                                        <div className="ml-3 text-sm font-medium text-white">
-                                            More than once a day?
-                                        </div>
-                                    </label>
-                                </div>
                                 <div className="flex items-center">
                                     <button type="submit" className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 transition duration-500 rounded shadow-sm hover:bg-green-800 focus:outline-none focus:ring" onClick={handleSubmit}> Add Task</button>
                                 </div>
