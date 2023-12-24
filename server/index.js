@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
@@ -12,8 +13,23 @@ const PORT = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use(express.urlencoded({ extended: false }));
 
-const uri = "mongodb+srv://ahmedashaz9:MpyClnFaC7MuMcb3@cluster0.xwx3k4e.mongodb.net/?retryWrites=true&w=majority";
+//STATIC
+// get directory where is index.html
+// Have to cd to parent directory of server and client
+const root = path.join(__dirname, '..', 'client', 'build');
+
+//express.use static with the directory
+app.use(express.static(root));
+//express get request any (*) root, please use file that is on root directory configure above.
+app.get("*", (req, res) => {
+    res.sendFile('index.html', { root });
+});
+
+
+
+const uri = process.env.MONGODB_URI || "mongodb+srv://ahmedashaz9:MpyClnFaC7MuMcb3@cluster0.xwx3k4e.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 
